@@ -1,1 +1,68 @@
 # Peace-TV-Network
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Peace TV Channels</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #111;
+      color: #fff;
+    }
+    video {
+      width: 80%;
+      max-width: 800px;
+      height: auto;
+      margin-top: 20px;
+      border: 4px solid #0f0;
+      border-radius: 10px;
+    }
+    select {
+      margin-top: 20px;
+      padding: 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Peace TV Streaming</h1>
+
+  <select id="channelSelect">
+    <option value="https://dzkyvlfyge.erbvr.com/PeaceTvEnglish/tracks-v3a1/mono.m3u8">Peace TV English</option>
+    <option value="https://dzkyvlfyge.erbvr.com/PeaceTvUrdu/tracks-v3a1/mono.m3u8">Peace TV Urdu</option>
+    <option value="https://dzkyvlfyge.erbvr.com/PeaceTvBangla/tracks-v3a1/mono.m3u8">Peace TV Bangla</option>
+  </select>
+
+  <video id="video" controls autoplay></video>
+
+  <script>
+    const video = document.getElementById('video');
+    const select = document.getElementById('channelSelect');
+
+    function loadStream(url) {
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = url;
+        video.addEventListener('loadedmetadata', () => video.play());
+      }
+    }
+
+    select.addEventListener('change', () => {
+      video.pause();
+      video.src = '';
+      loadStream(select.value);
+    });
+
+    // Load initial channel
+    loadStream(select.value);
+  </script>
+</body>
+</html>
